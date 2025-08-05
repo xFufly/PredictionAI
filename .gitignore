@@ -1,0 +1,5 @@
+node_modules
+pretrained.json
+package-lock.json
+dict.json
+pretrained_poems_fr.json

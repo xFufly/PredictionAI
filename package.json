@@ -1,0 +1,22 @@
+{
+  "name": "predictionai",
+  "version": "1.0.0",
+  "description": "An ai based on neuraflow",
+  "main": "src/index.js",
+  "scripts": {
+    "train": "node ./src/train.js",
+    "start": "node ./src/pretrained.js"
+  },
+  "keywords": [
+    "AI",
+    "NeuraFlow",
+    "Fufly",
+    "Data"
+  ],
+  "author": "DIDELOT Tim",
+  "license": "MIT",
+  "dependencies": {
+    "neuraflow": "github:CaraPloof/neuraflow",
+    "readline": "^1.3.0"
+  }
+}
