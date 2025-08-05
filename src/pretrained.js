@@ -12,7 +12,6 @@ const readline = require('readline').createInterface({
 
 readline.question('Enter a word, I predict the next ones.\n', word => {
     readline.question('How many words should I predict ?.\n', nbr => {
-        print("\n");
         print(word);
         for (let i = 0; i < parseInt(nbr); i++) {
             output = nn.predict(wordToBin(word));

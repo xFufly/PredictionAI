@@ -9,6 +9,9 @@ const nn = new NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate,
 // Importing the dataset
 const dataset = require("../datasets/poems_fr.json");
 
+// Context features
+var seenWords = [];
+
 var trainingInputs = [];
 var trainingOutputs = [];
 
@@ -18,8 +21,14 @@ for (let o of dataset) {
     for (word of content) {
         let hash = wordToBin(word);
         if (i > 0 && i < Object.keys(content).length) {
-            trainingInputs.push(wordToBin(content[i-1]))
-            trainingOutputs.push(hash);
+            if (!seenWords.includes(content[i-1])) {
+                trainingInputs.push(wordToBin(content[i-1]))
+                seenWords.push(content[i-1]);
+                trainingOutputs.push(hash);
+            } else if (i > 1) {
+                trainingInputs.push(wordToBin(content[i-1], content[i-2]))
+                trainingOutputs.push(hash);
+            }
         }
         i++;
     }
@@ -34,9 +43,9 @@ var ok = 0;
 trainingInputs.forEach((input, index) => {
     const output = nn.predict(input);
     if (binToWord(output) === binToWord(trainingOutputs[index])) {
-        print(`I: ${binToWord(input)} | O: ${binToWord(output)} | Expected: ${binToWord(trainingOutputs[index])}`);
         ok++;
     } else { 
+        print(`I: ${binToWord(input)} | O: ${binToWord(output)} | Expected: ${binToWord(trainingOutputs[index])}`);
         fail++ 
     }
 });

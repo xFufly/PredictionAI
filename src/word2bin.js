@@ -27,6 +27,16 @@ Binary representation (first 5 chars): [
   ... padded with zeros to reach 256 bits ...
 ]
 
+This brought us to 50% accuracy. This looks like to be due to common words or short words.
+
+Let's take advantage of the 256 fixed bits size of a word to fill the other bits of a context.
+Here's the process : 
+- If the world is new, we leave the empty bits empty
+- If it isn't new, we fill the empty bits with the word before
+Now, we're at more than 90% accuracy.
+
+
+
 */
 
 const { nbrToBin, binToNbr } = require("./binary");
@@ -39,14 +49,33 @@ const { charBits, wordBits, wordChars } = require("./config");
  * 
  * @param {string} word - The input word to encode.
  * @returns {number[]} A binary array representing the word.
+ * @param {string} context 
  */
-function wordToBin(word) {
+function wordToBin(word, context) {
     let binWord = [];
 
     for (let c of word) {
         let charCode = c.charCodeAt(0);
         let binChar = nbrToBin(charCode, charBits);
         binWord.push(...binChar);
+    }
+
+    // Adding a empty space between word and context
+    for (let i = 0; i < 8; i++) {
+        if (binWord.length < wordBits) {
+            binWord.push(0);
+        }
+    }
+
+    // Context filling
+    if (context) {
+        for (let c of context) {
+            if (binWord.length < wordBits) {
+                let charCode = c.charCodeAt(0);
+                let binChar = nbrToBin(charCode, charBits);
+                binWord.push(...binChar);
+            }
+        }
     }
 
     // Pad the binary word to 256 bits
@@ -61,7 +90,7 @@ function wordToBin(word) {
  * Converts a fixed-size binary array back into a string.
  * Stops decoding if a null character (code 0) is encountered.
  * 
- * @param {number[]} binWord - The binary array (must be 256 bits).
+ * @param {number[]} binWord - The binary array (must be 256 bits). 
  * @returns {string} The decoded string.
  */
 function binToWord(binWord) {
